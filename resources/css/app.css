@@ -1,27 +1,269 @@
+@import './auth/login.css';
+@import './auth/dashboard.css';
+
+:root {
+    --green: #006b3f;
+    --green-dark: #004d2d;
+    --ink: #172033;
+    --muted: #5b6577;
+    --bg: #f4f7fb;
+    --card: #ffffff;
+    --border: #dfe5ee;
+    --danger-bg: #fff0f0;
+    --danger-border: #e5a8a8;
+    --danger-text: #7a1818;
+    --success-bg: #eef8f1;
+    --success-border: #9dceb0;
+    --success-text: #1f5a37;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: system-ui, sans-serif;
     margin: 0;
-    color: #1f2937;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.5;
 }
 
 nav {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
     gap: 1rem;
     padding: 1rem 2rem;
-    background: #006b3f;
+    background: var(--green);
 }
 
-nav a {
+nav a,
+.nav-logout button {
     color: white;
     text-decoration: none;
+    background: transparent;
+    border: 0;
+    font: inherit;
+    cursor: pointer;
 }
 
-nav a:hover {
+nav a:hover,
+.nav-logout button:hover {
     text-decoration: underline;
+}
+
+.brand {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-cta {
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 8px;
+    padding: 0.35rem 0.75rem;
+}
+
+.nav-logout {
+    display: inline;
+    margin: 0;
 }
 
 .container {
     max-width: 1100px;
     margin: 0 auto;
     padding: 2rem;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.contact-form,
+.login-form {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 440px;
+    margin-top: 1.5rem;
+}
+
+.form-group {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem 0.875rem;
+    border: 1px solid #b9c4d4;
+    border-radius: 10px;
+    font: inherit;
+    background: white;
+}
+
+.form-group textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: 3px solid rgba(0, 107, 63, 0.18);
+    border-color: var(--green);
+}
+
+.field-error {
+    margin: 0;
+    color: var(--danger-text);
+    font-size: 0.9rem;
+}
+
+.field-hint {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.button-primary,
+.button-secondary {
+    display: inline-block;
+    border: 0;
+    border-radius: 10px;
+    padding: 0.8rem 1.1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+}
+
+.button-primary {
+    background: var(--green);
+    color: white;
+}
+
+.button-primary:hover {
+    background: var(--green-dark);
+}
+
+.button-secondary {
+    background: white;
+    color: var(--green);
+    border: 1px solid var(--green);
+}
+
+.alert {
+    padding: 0.875rem 1rem;
+    border-radius: 10px;
+    margin: 1rem 0;
+}
+
+.alert-error {
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-border);
+    color: var(--danger-text);
+}
+
+.alert-success {
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+    color: var(--success-text);
+}
+
+.page-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.page-header h1,
+.post-detail h1 {
+    margin-top: 0;
+}
+
+.post-item,
+.post-detail {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.post-item h2 {
+    margin: 0 0 0.35rem;
+    font-size: 1.25rem;
+}
+
+.post-item h2 a {
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.post-item h2 a:hover {
+    color: var(--green);
+}
+
+.post-meta {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0 0 0.75rem;
+}
+
+.post-body {
+    white-space: pre-wrap;
+    margin-bottom: 1.5rem;
+}
+
+.post-form {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 640px;
+    margin-top: 1.5rem;
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.button-danger {
+    display: inline-block;
+    border: 0;
+    border-radius: 10px;
+    padding: 0.8rem 1.1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: #9b1c1c;
+    color: white;
+}
+
+.empty-state {
+    background: white;
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    color: var(--muted);
 }
