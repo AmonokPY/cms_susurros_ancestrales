@@ -1,4 +1,5 @@
 import './bootstrap';
 import './auth/login.js';
+import { initThemeToggle } from './theme';
 
-console.log('CMS Susurros Ancestrales cargado');
+initThemeToggle();

@@ -24,7 +24,7 @@
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="button-primary">Actualizar</button>
+            <button type="submit" class="btn-colombia">Actualizar</button>
             <a href="{{ route('posts.show', $post) }}" class="button-secondary">Cancelar</a>
         </div>
     </form>

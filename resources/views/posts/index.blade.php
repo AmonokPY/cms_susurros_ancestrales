@@ -9,11 +9,11 @@
             <h1>Publicaciones</h1>
             <p>CRUD protegido con autenticación, validación y autorización por propietario.</p>
         </div>
-        <a href="{{ route('posts.create') }}" class="button-primary">Nueva publicación</a>
+        <a href="{{ route('posts.create') }}" class="btn-colombia">Nueva publicación</a>
     </div>
 
     @forelse ($posts as $post)
-        <article class="post-item">
+        <article class="post-item ds-card franja-tricolor">
             <h2><a href="{{ route('posts.show', $post) }}">{{ $post->title }}</a></h2>
             <p class="post-meta">
                 Por {{ $post->user->name }} · {{ $post->created_at->format('d/m/Y H:i') }}
