@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreContactRequest;
 use App\Models\PlayItem;
 use App\Models\Puzzle;
 use App\Models\PuzzleSlugRedirect;
@@ -9,7 +10,6 @@ use App\Models\SiteSetting;
 use App\Models\Sponsor;
 use App\Services\MediaService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PageController extends Controller
@@ -41,13 +41,9 @@ class PageController extends Controller
         return view('pages.contact');
     }
 
-    public function sendContact(Request $request): RedirectResponse
+    public function sendContact(StoreContactRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'email', 'max:150'],
-            'message' => ['required', 'string', 'max:2000'],
-        ]);
+        $request->validated();
 
         return back()->with('status', 'Mensaje validado correctamente.');
     }
