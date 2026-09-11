@@ -23,5 +23,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('Segura#2026!'),
             ]
         );
+
+        $this->call(SiteContentSeeder::class);
     }
 }
