@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro | CMS Susurros Ancestrales</title>
+    <script>
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('colombia-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
     <main class="login-page">
-        <section class="login-card">
+        <section class="login-card franja-tricolor">
             <div class="login-header">
                 <p class="login-badge">Susurros Ancestrales</p>
                 <h1>Crear cuenta</h1>
@@ -88,7 +91,7 @@
                     >
                 </div>
 
-                <button type="submit" class="button-primary">Registrarse</button>
+                <button type="submit" class="btn-colombia">Registrarse</button>
             </form>
 
             <p class="auth-footer">

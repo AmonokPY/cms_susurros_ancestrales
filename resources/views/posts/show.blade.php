@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <article class="post-detail">
+    <article class="post-detail ds-card franja-tricolor">
         <h1>{{ $post->title }}</h1>
         <p class="post-meta">
             Por {{ $post->user->name }} · {{ $post->created_at->format('d/m/Y H:i') }}

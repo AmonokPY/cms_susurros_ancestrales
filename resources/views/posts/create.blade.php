@@ -23,7 +23,7 @@
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="button-primary">Guardar</button>
+            <button type="submit" class="btn-colombia">Guardar</button>
             <a href="{{ route('posts.index') }}" class="button-secondary">Cancelar</a>
         </div>
     </form>

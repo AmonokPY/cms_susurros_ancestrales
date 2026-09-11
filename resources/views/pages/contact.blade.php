@@ -4,6 +4,7 @@
 
 @section('content')
 <div class="container">
+    <div class="ds-card franja-tricolor">
     <h1>Contacto</h1>
     <p>Formulario protegido con CSRF y validado en el servidor.</p>
 
@@ -28,7 +29,8 @@
             @error('message') <p class="field-error">{{ $message }}</p> @enderror
         </div>
 
-        <button type="submit" class="button-primary">Enviar</button>
+        <button type="submit" class="btn-colombia">Enviar</button>
     </form>
+    </div>
 </div>
 @endsection
