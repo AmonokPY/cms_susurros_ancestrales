@@ -19,7 +19,7 @@ Route::get('/puzzle/{slug}', [PageController::class, 'puzzles'])->name('puzzles.
 Route::get('/acerca', [PageController::class, 'about'])->name('about');
 Route::get('/contacto', [PageController::class, 'contact'])->name('contact');
 Route::post('/contacto', [PageController::class, 'sendContact'])
-    ->middleware('throttle:10,1')
+    ->middleware('throttle:contact')
     ->name('contact.send');
 
 Route::middleware('guest')->group(function () {
