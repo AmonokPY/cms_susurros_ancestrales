@@ -29,5 +29,9 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(5)
                 ->by($email.'|'.$request->ip());
         });
+
+        RateLimiter::for('contact', function (Request $request) {
+            return Limit::perMinute(10)->by((string) $request->ip());
+        });
     }
 }
