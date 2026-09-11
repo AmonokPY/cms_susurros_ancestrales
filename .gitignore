@@ -19,6 +19,8 @@
 /storage/*.key
 /storage/pail
 /vendor
+/tmp_design_system
+/laravel
 Homestead.json
 Homestead.yaml
 Thumbs.db
