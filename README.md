@@ -1,24 +1,34 @@
 # CMS Susurros Ancestrales
 
-Portal web seguro con Laravel: páginas públicas, registro, login y dashboard del CMS protegido.
+Portal web y CMS del videojuego **Susurranes**, desarrollado en Laravel para las asignaturas *Desarrollo de Software Seguro* y *Seguridad en Aplicaciones* (Especialización en Seguridad de la Información — Universidad de Cundinamarca).
+
+Identidad visual: design system **gia_stilo_colombiano** (paleta de la bandera, tipografías Fraunces/Outfit, tema claro/oscuro).
+
+## Stack
+
+- Laravel 12, PHP 8.2+
+- Vite, Blade
+- MySQL (XAMPP) en desarrollo local; SQLite en memoria para pruebas
+- PHPUnit
 
 ## Requisitos
 
-- PHP 8.2+
-- Composer
-- Node.js y npm
-- SQLite (por defecto) o MySQL
+- PHP 8.2+, Composer, Node.js y npm
+- MySQL 8 (o MariaDB de XAMPP) para el entorno local
 
 ## Instalación
 
 ```bash
 composer install
-copy .env.example .env   # Windows
+copy .env.example .env
 php artisan key:generate
 php artisan migrate --seed
+php artisan storage:link
 npm install
 npm run build
 ```
+
+En producción: `APP_DEBUG=false`, `APP_ENV=production` y nunca versionar `.env`.
 
 ## Ejecución
 
@@ -26,71 +36,61 @@ npm run build
 composer run dev
 ```
 
-O en dos terminales:
+O `php artisan serve` + `npm run dev`. Abrir `http://localhost:8000`.
 
-```bash
-php artisan serve
-npm run dev
-```
-
-Abrir: http://localhost:8000
-
-## Usuario de prueba
+## Usuario de prueba (seeder)
 
 | Campo | Valor |
 |-------|-------|
 | Correo | `usuario@secureapp.test` |
 | Contraseña | `Segura#2026!` |
 
-## Flujo de la aplicación
+## Rutas principales
 
-1. **Inicio** (`/`) — página principal pública
-2. **Registro** (`/registro`) o **Login** (`/login`)
-3. **Dashboard** (`/dashboard`) — solo usuarios autenticados
+| Método | URI | Nombre | Acceso |
+|--------|-----|--------|--------|
+| GET | `/` | `home` | Público |
+| GET | `/acerca` | `about` | Público |
+| GET | `/contacto` | `contact` | Público |
+| POST | `/contacto` | `contact.send` | Público + `throttle:contact` |
+| GET | `/puzzles` | `puzzles.index` | Público |
+| GET | `/login` | `login` | Guest |
+| POST | `/login` | `login.store` | Guest + `throttle:login` |
+| GET | `/registro` | `register` | Guest |
+| POST | `/registro` | `register.store` | Guest |
+| GET | `/dashboard` | `dashboard` | Auth |
+| resource | `/posts` | `posts.*` | Auth + Policy |
+| POST | `/logout` | `logout` | Auth |
+| prefix | `/cms/*` | `admin.*` | Auth |
 
-## Estructura de rutas
+## Controles de seguridad
 
-| Método | URI | Nombre | Controlador | Acceso |
-|--------|-----|--------|-------------|--------|
-| GET | `/` | `home` | PageController@home | Público |
-| GET | `/acerca` | `about` | PageController@about | Público |
-| GET | `/contacto` | `contact` | PageController@contact | Público |
-| POST | `/contacto` | `contact.send` | PageController@sendContact | Público + throttle |
-| GET | `/registro` | `register` | RegisterController@create | Guest |
-| POST | `/registro` | `register.store` | RegisterController@store | Guest |
-| GET | `/login` | `login` | LoginController@create | Guest |
-| POST | `/login` | `login.store` | LoginController@store | Guest + throttle:login |
-| GET | `/dashboard` | `dashboard` | vista dashboard | Auth |
-| GET | `/posts` | `posts.index` | PostController@index | Auth |
-| GET | `/posts/create` | `posts.create` | PostController@create | Auth |
-| POST | `/posts` | `posts.store` | PostController@store | Auth |
-| GET | `/posts/{post}` | `posts.show` | PostController@show | Auth |
-| GET | `/posts/{post}/edit` | `posts.edit` | PostController@edit | Auth |
-| PUT/PATCH | `/posts/{post}` | `posts.update` | PostController@update | Auth + Policy |
-| DELETE | `/posts/{post}` | `posts.destroy` | PostController@destroy | Auth + Policy |
-| POST | `/logout` | `logout` | LoginController@destroy | Auth |
-
-## Controles de seguridad aplicados
-
-- Secretos en `.env` (no versionado)
-- CSRF (`@csrf`) en formularios POST
-- Validación en servidor
-- Hash de contraseñas (`Hash::make` / cast `hashed`)
-- Regeneración de sesión tras login/registro
-- Logout con `invalidate` + `regenerateToken`
+- `.env` fuera de Git; secretos fuera del código
+- CSRF en formularios de estado
+- Validación en servidor (Form Request / `$request->validate`)
+- `Auth::attempt()` + `session()->regenerate()`
+- Logout con `invalidate()` + `regenerateToken()`
 - Middleware `auth` / `guest`
-- Rate limiting en login (`throttle:login`, 5/min por email+IP)
-- Escape Blade `{{ }}` contra XSS
-- Contraseña de registro: mínimo 12 caracteres, mayúsculas, minúsculas, números y símbolos
-- CRUD de publicaciones con `user_id` desde el usuario autenticado (no del formulario)
-- Policy/Gate: solo el propietario edita o elimina
-- Form Requests para validación de store/update
+- Rate limiting de login (5/min email+IP) y contacto (10/min por IP)
+- Hash de contraseñas (`hashed` / `Hash::make`)
+- Route model binding y `PostPolicy`
+- Escape Blade `{{ }}`
+- Rutas nombradas y `@vite`
+- Documentación en `/docs`
 
-## Comandos útiles
+Detalle del cruce con las guías del curso: [docs/auditoria-guias.md](docs/auditoria-guias.md).
+
+## Pruebas
 
 ```bash
-php artisan route:list
+php artisan test
 composer audit
 npm audit
-php artisan test
 ```
+
+## Cómo contribuir
+
+1. Crea una rama desde `main` (`feature/...`, `security/...`, `docs/...`).
+2. Commits atómicos con Conventional Commits en español.
+3. Abre un Pull Request hacia `main` (plantilla en `.github/`).
+4. No uses `git push --force` sobre `main`.
