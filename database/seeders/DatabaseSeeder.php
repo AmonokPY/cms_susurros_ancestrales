@@ -11,19 +11,28 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
+        $this->call([
+            RoleSeeder::class,
+            PermissionSeeder::class,
+        ]);
+
         User::query()->updateOrCreate(
             ['email' => 'usuario@secureapp.test'],
             [
                 'name' => 'Usuario de Prueba',
                 'password' => Hash::make('Segura#2026!'),
+                'role' => User::ROLE_ADMIN,
+                'is_active' => true,
+                'cms_access' => true,
+                'email_verified_at' => now(),
             ]
         );
 
-        $this->call(SiteContentSeeder::class);
+        $this->call([
+            AuthorizedEmailSeeder::class,
+            SiteContentSeeder::class,
+        ]);
     }
 }

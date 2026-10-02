@@ -20,12 +20,12 @@
             </a>
             <div class="nav-links">
                 <a href="{{ route('home') }}">Inicio</a>
-                <a href="{{ route('about') }}">Acerca</a>
-                <a href="{{ route('contact') }}">Contacto</a>
                 <a href="{{ route('puzzles.index') }}">Puzzles</a>
                 @auth
-                    <a href="{{ route('dashboard') }}">Dashboard</a>
-                    <a href="{{ route('posts.index') }}">Publicaciones</a>
+                    @if (auth()->user()->canAccessCms())
+                        <a href="{{ route('dashboard') }}">CMS</a>
+                    @endif
+                    <span>{{ auth()->user()->name }}</span>
                     <form method="POST" action="{{ route('logout') }}" class="nav-logout">
                         @csrf
                         <button type="submit">Cerrar sesión</button>

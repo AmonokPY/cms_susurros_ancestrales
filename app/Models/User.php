@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,25 +13,24 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    public function posts(): HasMany
-    {
-        return $this->hasMany(Post::class);
-    }
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_EDITOR = 'editor';
+    public const ROLE_AUTHOR = 'autor';
+    public const ROLE_USER = 'usuario';
 
     /**
-     * The attributes that are mass assignable.
-     *
      * @var list<string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
+        'is_active',
+        'cms_access',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
      * @var list<string>
      */
     protected $hidden = [
@@ -41,8 +39,6 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
      * @return array<string, string>
      */
     protected function casts(): array
@@ -50,6 +46,36 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
+            'cms_access' => 'boolean',
         ];
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function hasActiveRole(): bool
+    {
+        return $this->is_active === true
+            && in_array($this->role, [
+                self::ROLE_ADMIN,
+                self::ROLE_EDITOR,
+                self::ROLE_AUTHOR,
+                self::ROLE_USER,
+            ], true);
+    }
+
+    public function canAccessCms(): bool
+    {
+        return $this->is_active
+            && $this->cms_access
+            && in_array($this->role, [self::ROLE_ADMIN, self::ROLE_EDITOR, self::ROLE_AUTHOR], true);
+    }
+
+    public function auditLogs(): HasMany
+    {
+        return $this->hasMany(AuditLog::class);
     }
 }

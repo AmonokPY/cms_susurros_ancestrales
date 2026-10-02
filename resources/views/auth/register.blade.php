@@ -9,14 +9,13 @@
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-    <main class="login-page">
-        <section class="login-card franja-tricolor">
-            <div class="login-header">
-                <p class="login-badge">Susurros Ancestrales</p>
-                <h1>Crear cuenta</h1>
-                <p>Regístrese para acceder al dashboard del CMS.</p>
-            </div>
+<body class="login-page auth-page">
+    <main class="login-card auth-card franja-tricolor">
+        <header class="login-header auth-header">
+            <span class="login-badge">Susurros Ancestrales</span>
+            <h1>Crear cuenta</h1>
+            <p>Cree su cuenta para ver el sitio. El CMS lo activa un administrador.</p>
+        </header>
 
             @if ($errors->any())
                 <div class="alert alert-error" role="alert">
@@ -33,12 +32,13 @@
                 @csrf
 
                 <div class="form-group">
-                    <label for="name">Nombre</label>
+                    <label for="name">Nombre completo</label>
                     <input
                         id="name"
                         type="text"
                         name="name"
                         value="{{ old('name') }}"
+                        autocomplete="name"
                         required
                         maxlength="100"
                         autofocus
@@ -52,9 +52,9 @@
                         type="email"
                         name="email"
                         value="{{ old('email') }}"
-                        autocomplete="username"
+                        autocomplete="email"
                         required
-                        maxlength="150"
+                        maxlength="255"
                     >
                 </div>
 
@@ -77,7 +77,7 @@
                             Mostrar
                         </button>
                     </div>
-                    <p class="field-hint">Mínimo 12 caracteres, mayúsculas, minúsculas, números y símbolos.</p>
+                    <p class="field-hint">Mínimo 8 caracteres, con mayúsculas, minúsculas y un número.</p>
                 </div>
 
                 <div class="form-group">
@@ -91,16 +91,15 @@
                     >
                 </div>
 
-                <button type="submit" class="btn-colombia">Registrarse</button>
+                <button type="submit" class="btn-colombia">Crear cuenta</button>
             </form>
 
             <p class="auth-footer">
-                ¿Ya tiene cuenta?
+                ¿Ya tiene una cuenta?
                 <a href="{{ route('login') }}">Iniciar sesión</a>
                 ·
                 <a href="{{ route('home') }}">Inicio</a>
             </p>
-        </section>
     </main>
 </body>
 </html>
