@@ -13,18 +13,18 @@ class SiteContentSeeder extends Seeder
     public function run(): void
     {
         SiteSetting::current()->update([
-            'hero_title' => 'Susurranes',
+            'hero_title' => 'Susurros Ancestrales',
             'run_button_text' => 'Run',
-            'run_button_url' => 'https://example.com/susurranes',
+            'run_button_url' => 'https://example.com/susurros-ancestrales',
             'android_button_text' => 'Instalar Android',
-            'android_apk_url' => 'https://example.com/susurranes.apk',
+            'android_apk_url' => 'https://example.com/susurros-ancestrales.apk',
             'about_title' => 'Quiénes somos',
             'about_text' => '<p>Susurros ancestrales es un videojuego Colombiano que transforma historias por contar en puzles basados en lugares reales.</p>',
             'about_image_path' => 'https://assets.codepen.io/16327/portrait-number-01.png',
             'about_image_alt' => 'Paisaje ancestral colombiano',
             'contact_title' => 'Contáctanos',
-            'contact_email' => 'hola@susurranes.com',
-            'contact_phone' => '3249935042',
+            'contact_email' => 'hola@susurros-ancestrales.com',
+            'contact_phone' => '3227486684',
             'instagram_url' => 'https://instagram.com',
             'youtube_url' => 'https://youtube.com',
             'address' => 'Cundinamarca, Colombia',
@@ -46,7 +46,7 @@ class SiteContentSeeder extends Seeder
 
         $sponsors = [
             ['Kroquipollo', 'Proporciona un descuento especial por jugador', 'https://assets.codepen.io/16327/portrait-number-04.png', '3241112233'],
-            ['Antiplano Trip', 'Rutas turísticas para vivir el puzzle', 'https://assets.codepen.io/16327/portrait-number-05.png', '3249935042'],
+            ['Antiplano Trip', 'Rutas turísticas para vivir el puzzle', 'https://assets.codepen.io/16327/portrait-number-05.png', '3227486684'],
             ['Altiplano Cultura', 'Apoya la memoria territorial', 'https://assets.codepen.io/16327/portrait-number-06.png', null],
         ];
 
@@ -70,7 +70,7 @@ class SiteContentSeeder extends Seeder
                 'cover' => 'https://picsum.photos/id/1015/800/450',
                 'address' => 'Suta Tausa, Cundinamarca',
                 'cta' => 'Contacta a Antiplano Trip para vivir la experiencia',
-                'cta_link' => 'tel:3249935042',
+                'cta_link' => 'tel:3227486684',
             ],
             [
                 'name' => 'Santo Cristo',
@@ -88,7 +88,7 @@ class SiteContentSeeder extends Seeder
                 'cover' => 'https://picsum.photos/id/1018/800/450',
                 'address' => 'Altiplano cundiboyacense',
                 'cta' => 'Escríbenos',
-                'cta_link' => 'mailto:hola@susurranes.com',
+                'cta_link' => 'mailto:hola@susurros-ancestrales.com',
             ],
         ];
 

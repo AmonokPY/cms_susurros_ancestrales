@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('site_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('hero_title', 150)->default('Susurranes');
+            $table->string('hero_title', 150)->default('Susurros Ancestrales');
             $table->string('run_button_text', 80)->default('Run');
             $table->string('run_button_url', 500)->nullable();
             $table->string('android_button_text', 80)->default('Instalar Android');

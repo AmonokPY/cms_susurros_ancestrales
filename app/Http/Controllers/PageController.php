@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreContactRequest;
 use App\Models\PlayItem;
 use App\Models\Puzzle;
 use App\Models\PuzzleSlugRedirect;
@@ -29,23 +28,6 @@ class PageController extends Controller
             'sponsorCards' => $this->loopCards($sponsors),
             'media' => $media,
         ]);
-    }
-
-    public function about(): View
-    {
-        return view('pages.about');
-    }
-
-    public function contact(): View
-    {
-        return view('pages.contact');
-    }
-
-    public function sendContact(StoreContactRequest $request): RedirectResponse
-    {
-        $request->validated();
-
-        return back()->with('status', 'Mensaje validado correctamente.');
     }
 
     public function puzzles(MediaService $media, ?string $slug = null): View|RedirectResponse

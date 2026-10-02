@@ -15,7 +15,7 @@
             <div class="login-header">
                 <p class="login-badge">Susurros Ancestrales</p>
                 <h1>Iniciar sesión</h1>
-                <p>Acceda al CMS con sus credenciales.</p>
+                <p>Acceda al CMS con sus credenciales. Hay un máximo de 5 intentos por minuto.</p>
             </div>
 
             @if ($errors->any())

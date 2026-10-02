@@ -121,25 +121,7 @@
             </div>
         </div>
         <div class="rich-text">{!! $settings->contact_extra !!}</div>
-        <form method="POST" action="{{ route('contact.send') }}" class="contact-form ds-card franja-tricolor">
-            @csrf
-            <div class="form-group">
-                <label for="home-name">Nombre</label>
-                <input id="home-name" name="name" value="{{ old('name') }}" required maxlength="100">
-                @error('name') <p class="field-error">{{ $message }}</p> @enderror
-            </div>
-            <div class="form-group">
-                <label for="home-email">Correo</label>
-                <input id="home-email" type="email" name="email" value="{{ old('email') }}" required maxlength="150">
-                @error('email') <p class="field-error">{{ $message }}</p> @enderror
-            </div>
-            <div class="form-group">
-                <label for="home-message">Mensaje</label>
-                <textarea id="home-message" name="message" required maxlength="2000">{{ old('message') }}</textarea>
-                @error('message') <p class="field-error">{{ $message }}</p> @enderror
-            </div>
-            <button type="submit" class="btn-colombia">Enviar</button>
-        </form>
+        <p><a class="btn-colombia" href="{{ route('contact.create') }}">Enviar un mensaje</a></p>
     </div>
 </section>
 @endsection

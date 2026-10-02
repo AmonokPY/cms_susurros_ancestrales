@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterUserRequest;
+use App\Models\AuditLog;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class RegisterController extends Controller
@@ -18,27 +18,25 @@ class RegisterController extends Controller
         return view('auth.register');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(RegisterUserRequest $request): RedirectResponse
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'email', 'max:150', 'unique:users,email'],
-            'password' => [
-                'required',
-                'confirmed',
-                Password::min(12)->mixedCase()->numbers()->symbols(),
-            ],
-        ]);
-
         $user = User::create([
-            'name' => $data['name'],
-            'email' => strtolower($data['email']),
-            'password' => Hash::make($data['password']),
+            'name' => $request->string('name'),
+            'email' => $request->string('email'),
+            'password' => Hash::make($request->string('password')),
+            'role' => User::ROLE_USER,
+            'is_active' => true,
+            'cms_access' => false,
         ]);
 
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard');
+        AuditLog::record('auth.register', 'Registro de cuenta pública.', 'ok', $user);
+
+        return redirect()->route('home')->with(
+            'status',
+            'Cuenta creada. Puede ver el sitio; el CMS lo habilita un administrador.'
+        );
     }
 }

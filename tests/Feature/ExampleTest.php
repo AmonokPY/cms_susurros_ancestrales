@@ -14,10 +14,10 @@ class ExampleTest extends TestCase
         $this->seed();
 
         $this->get('/')->assertOk();
-        $this->get('/acerca')->assertOk();
-        $this->get('/contacto')->assertOk();
         $this->get('/puzzles')->assertOk();
         $this->get('/puzzles/farallones-de-suta-tausa')->assertOk();
+        $this->get('/acerca')->assertNotFound();
+        $this->get('/contacto')->assertOk();
         $this->get('/dashboard')->assertRedirect(route('login'));
     }
 }

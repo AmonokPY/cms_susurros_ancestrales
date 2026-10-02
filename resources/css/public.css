@@ -26,6 +26,16 @@
 .site-header nav a { color: rgba(255, 255, 255, 0.78); }
 .site-header nav a.is-active,
 .site-header nav a:hover { color: var(--col-yellow); text-decoration: none; }
+.site-header .nav-user { color: #fff; font-size: 0.9rem; }
+.site-header .nav-logout { margin: 0; }
+.site-header .nav-logout button {
+    background: transparent;
+    border: 0;
+    color: rgba(255, 255, 255, 0.78);
+    font: inherit;
+    cursor: pointer;
+}
+.site-header .nav-logout button:hover { color: var(--col-yellow); }
 
 .hero {
     min-height: 70vh;
@@ -146,6 +156,46 @@
 .drag-proxy { visibility: hidden; position: absolute; }
 
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.contact-form {
+    max-width: 640px;
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+.contact-form .form-group {
+    display: grid;
+    gap: 0.4rem;
+}
+.contact-form .form-group input,
+.contact-form .form-group textarea,
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.7rem 0.85rem;
+    border-radius: 8px;
+    border: 1px solid #c5c9d4;
+    background: #ffffff !important;
+    color: #172033 !important;
+    caret-color: #172033;
+    color-scheme: light;
+}
+.contact-form .form-group input::placeholder,
+.contact-form .form-group textarea::placeholder,
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    color: #6b7280;
+}
+.contact-form .form-group input:focus,
+.contact-form .form-group textarea:focus,
+.contact-form input:focus,
+.contact-form textarea:focus {
+    background: #ffffff !important;
+    color: #172033 !important;
+    border-color: var(--col-blue);
+    outline: none;
+}
+.contact-form textarea { min-height: 160px; }
 .socials { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
 .site-footer { padding: 2rem; text-align: center; color: #888; border-top: 1px solid #2a2a2a; }
 
