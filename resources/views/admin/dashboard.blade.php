@@ -36,6 +36,11 @@
             <strong>{{ $sponsorCount }}</strong>
             <small>Patrocinadores</small>
         </a>
+        <a class="cms-stat franja-tricolor" href="{{ route('admin.emails.index') }}">
+            <span>Correos</span>
+            <strong>{{ $unreadMailCount }}</strong>
+            <small>Sin leer en la bandeja</small>
+        </a>
         <a class="cms-stat franja-tricolor" href="{{ route('admin.puzzles.index') }}">
             <span>Puzzles</span>
             <strong>{{ $puzzleCount }}</strong>

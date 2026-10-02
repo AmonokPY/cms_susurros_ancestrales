@@ -22,7 +22,7 @@
         <nav>
             <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'is-active' : '' }}">Inicio</a>
             <a href="{{ route('puzzles.index') }}" class="{{ request()->routeIs('puzzles.*') ? 'is-active' : '' }}">Puzzles</a>
-            <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'is-active' : '' }}">Contacto</a>
+            <a href="{{ route('contact.create') }}" class="{{ request()->routeIs('contact.*') ? 'is-active' : '' }}">Contacto</a>
             @auth
                 @if (auth()->user()->canAccessCms())
                     <a href="{{ route('dashboard') }}">CMS</a>

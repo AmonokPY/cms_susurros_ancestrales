@@ -24,6 +24,7 @@
                 <a href="{{ route('admin.settings.edit') }}">Inicio</a>
                 <a href="{{ route('admin.play-items.index') }}">Juega</a>
                 <a href="{{ route('admin.sponsors.index') }}">Explora</a>
+                <a href="{{ route('admin.emails.index') }}">Correos</a>
             @endcan
             @can('manage-media')
                 <a href="{{ route('admin.puzzles.index') }}">Puzzles</a>

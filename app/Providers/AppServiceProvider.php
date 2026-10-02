@@ -35,7 +35,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('contact', function (Request $request) {
-            return Limit::perMinute(10)->by((string) $request->ip());
+            return Limit::perMinute((int) config('security.rate_limits.contact_per_minute', 10))
+                ->by((string) $request->ip());
         });
 
         Gate::define('manage-users', fn (User $user) => $user->isAdmin());

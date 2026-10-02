@@ -4,11 +4,13 @@ use App\Http\Controllers\Admin\AuthorizedEmailController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PlayItemController;
 use App\Http\Controllers\Admin\PuzzleController;
+use App\Http\Controllers\Admin\ReceivedEmailController;
 use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\Admin\SponsorController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
@@ -19,10 +21,10 @@ Route::get('/puzzles/{slug}', [PageController::class, 'puzzles'])->name('puzzles
 Route::get('/puzzle/{slug}', [PageController::class, 'puzzles'])->name('puzzles.alias');
 
 Route::get('/acerca', [PageController::class, 'about'])->name('about');
-Route::get('/contacto', [PageController::class, 'contact'])->name('contact');
-Route::post('/contacto', [PageController::class, 'sendContact'])
+Route::get('/contacto', [ContactController::class, 'create'])->name('contact.create');
+Route::post('/contacto', [ContactController::class, 'store'])
     ->middleware('throttle:contact')
-    ->name('contact.send');
+    ->name('contact.store');
 
 Route::middleware('guest')->group(function () {
     Route::get('/registro', [RegisterController::class, 'create'])->name('register');
@@ -66,6 +68,11 @@ Route::middleware(['auth', 'authorized'])->group(function () {
 
             Route::post('sponsors/reorder', [SponsorController::class, 'reorder'])->name('sponsors.reorder');
             Route::resource('sponsors', SponsorController::class)->except(['show']);
+
+            Route::get('/correos', [ReceivedEmailController::class, 'index'])->name('emails.index');
+            Route::post('/correos/fetch', [ReceivedEmailController::class, 'fetch'])->name('emails.fetch');
+            Route::get('/correos/{receivedEmail}', [ReceivedEmailController::class, 'show'])->name('emails.show');
+            Route::patch('/correos/{receivedEmail}/leido', [ReceivedEmailController::class, 'markRead'])->name('emails.mark-read');
         });
 
         Route::middleware('can:manage-media')->group(function () {

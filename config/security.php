@@ -17,6 +17,7 @@ return [
         'login_per_minute' => 5,
         'register_per_hour' => 20,
         'verification_per_hour' => 5,
+        'contact_per_minute' => 10,
     ],
 
     'skip_mx_check' => env('SECURITY_SKIP_MX', true),
