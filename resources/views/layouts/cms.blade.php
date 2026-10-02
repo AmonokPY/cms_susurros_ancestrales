@@ -29,7 +29,6 @@
             @can('manage-media')
                 <a href="{{ route('admin.puzzles.index') }}">Puzzles</a>
             @endcan
-            <a href="{{ route('posts.index') }}">Publicaciones</a>
             <a href="{{ route('home') }}" target="_blank">Ver sitio</a>
         </nav>
         <button type="button" class="theme-toggle" data-theme-toggle>Tema claro/oscuro</button>

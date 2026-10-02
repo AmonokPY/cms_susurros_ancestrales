@@ -86,3 +86,21 @@ label { display: grid; gap: 0.35rem; font-weight: 600; }
 .reorder-list img { width: 56px; height: 72px; object-fit: cover; border-radius: 6px; }
 .reorder-list .handle { cursor: grab; }
 .social-row { display: flex; gap: 0.5rem; }
+
+.welcome-card { margin-bottom: 1.5rem; }
+.welcome-card h2 { margin: 0.35rem 0 0.5rem; }
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.stats-grid .cms-stat span,
+.stats-grid .cms-stat small { color: var(--fg-muted); }
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+}
+.security-list { margin: 0; padding-left: 1.1rem; }
+.audit-line { margin: 0.4rem 0; font-size: 0.92rem; }

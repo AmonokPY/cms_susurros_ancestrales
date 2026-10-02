@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Puzzles | '.($settings->hero_title ?? 'Susurranes'))
+@section('title', 'Puzzles | '.($settings->hero_title ?? 'Susurros Ancestrales'))
 @section('body_class', 'puzzles-page')
 
 @section('content')

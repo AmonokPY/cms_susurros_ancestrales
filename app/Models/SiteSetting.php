@@ -38,7 +38,7 @@ class SiteSetting extends Model
     public static function current(): self
     {
         return static::query()->firstOrCreate([], [
-            'hero_title' => 'Susurranes',
+            'hero_title' => 'Susurros Ancestrales',
             'about_text' => 'Susurros ancestrales es un videojuego Colombiano que transforma historias por contar en puzles basados en lugares reales',
         ]);
     }

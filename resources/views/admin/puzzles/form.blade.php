@@ -68,7 +68,7 @@
             <input name="cta_text" value="{{ old('cta_text', $item->cta_text) }}">
         </label>
         <label>Enlace o teléfono del CTA (https://, tel: o mailto:)
-            <input name="cta_link" value="{{ old('cta_link', $item->cta_link) }}" placeholder="tel:3249935042">
+            <input name="cta_link" value="{{ old('cta_link', $item->cta_link) }}" placeholder="tel:3227486684">
         </label>
     </fieldset>
 
