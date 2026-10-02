@@ -38,7 +38,7 @@ Leyenda: **IMPLEMENTADO** · **EQUIVALENTE** · **FALTANTE** (los FALTANTE de es
 | CSS/JS con Vite | IMPLEMENTADO | `@vite` |
 | Prueba acceso sin login | IMPLEMENTADO | `SecurityFlowsTest` |
 
-## Portal Susurranes (CMS de contenido)
+## Portal Susurros Ancestrales (CMS de contenido)
 
 | Requisito | Estado |
 |-----------|--------|

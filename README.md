@@ -1,6 +1,6 @@
 # CMS Susurros Ancestrales
 
-Portal web y CMS del videojuego **Susurranes**, desarrollado en Laravel para las asignaturas *Desarrollo de Software Seguro* y *Seguridad en Aplicaciones* (Especialización en Seguridad de la Información — Universidad de Cundinamarca).
+Portal web y CMS del videojuego **Susurros Ancestrales**, desarrollado en Laravel para las asignaturas *Desarrollo de Software Seguro* y *Seguridad en Aplicaciones* (Especialización en Seguridad de la Información — Universidad de Cundinamarca).
 
 Identidad visual: design system **gia_stilo_colombiano** (paleta de la bandera, tipografías Fraunces/Outfit, tema claro/oscuro).
 
