@@ -4,13 +4,34 @@
 @section('heading', 'Lista blanca')
 
 @section('content')
-<form method="POST" action="{{ route('admin.authorized-emails.store') }}" class="cms-form">
+<form method="POST" action="{{ route('admin.authorized-emails.store') }}" class="cms-form" novalidate>
     @csrf
     <label>Correo
-        <input type="email" name="email" value="{{ old('email') }}" required maxlength="255">
+        <input
+            type="email"
+            name="email"
+            value="{{ old('email') }}"
+            required
+            maxlength="255"
+            aria-invalid="{{ $errors->has('email') ? 'true' : 'false' }}"
+            @error('email') aria-describedby="email-error" @enderror
+        >
+        @error('email')
+            <span class="field-error" id="email-error" role="alert"><span aria-hidden="true">⚠</span> {{ $message }}</span>
+        @enderror
     </label>
     <label>Motivo
-        <input type="text" name="reason" value="{{ old('reason') }}" maxlength="255">
+        <input
+            type="text"
+            name="reason"
+            value="{{ old('reason') }}"
+            maxlength="255"
+            aria-invalid="{{ $errors->has('reason') ? 'true' : 'false' }}"
+            @error('reason') aria-describedby="reason-error" @enderror
+        >
+        @error('reason')
+            <span class="field-error" id="reason-error" role="alert"><span aria-hidden="true">⚠</span> {{ $message }}</span>
+        @enderror
     </label>
     <button type="submit" class="btn-colombia">Autorizar</button>
 </form>
@@ -18,10 +39,10 @@
 <table class="ds-table" style="margin-top:1.5rem">
     <thead>
         <tr>
-            <th>Correo</th>
-            <th>Motivo</th>
-            <th>Estado</th>
-            <th></th>
+            <th scope="col">Correo</th>
+            <th scope="col">Motivo</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Acciones</th>
         </tr>
     </thead>
     <tbody>

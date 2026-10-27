@@ -13,16 +13,17 @@
     @vite(['resources/css/public.css', 'resources/js/public.js'])
 </head>
 <body class="@yield('body_class', 'public-home')">
-    <div class="stripe-flag"></div>
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+    <div class="stripe-flag" aria-hidden="true"></div>
     <header class="site-header">
         <a class="logo" href="{{ route('home') }}">
-            <span class="brand-mark"><span></span><span></span><span></span></span>
+            <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
             {{ $settings->hero_title ?? 'Susurros Ancestrales' }}
         </a>
-        <nav>
-            <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'is-active' : '' }}">Inicio</a>
-            <a href="{{ route('puzzles.index') }}" class="{{ request()->routeIs('puzzles.*') ? 'is-active' : '' }}">Puzzles</a>
-            <a href="{{ route('contact.create') }}" class="{{ request()->routeIs('contact.*') ? 'is-active' : '' }}">Contacto</a>
+        <nav aria-label="Navegación principal">
+            <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'is-active' : '' }}" @if(request()->routeIs('home')) aria-current="page" @endif>Inicio</a>
+            <a href="{{ route('puzzles.index') }}" class="{{ request()->routeIs('puzzles.*') ? 'is-active' : '' }}" @if(request()->routeIs('puzzles.*')) aria-current="page" @endif>Puzzles</a>
+            <a href="{{ route('contact.create') }}" class="{{ request()->routeIs('contact.*') ? 'is-active' : '' }}" @if(request()->routeIs('contact.*')) aria-current="page" @endif>Contacto</a>
             @auth
                 @if (auth()->user()->canAccessCms())
                     <a href="{{ route('dashboard') }}">CMS</a>
@@ -40,9 +41,11 @@
     </header>
 
     @if (session('status'))
-        <p class="alert alert-success" style="max-width:1100px;margin:1rem auto;">{{ session('status') }}</p>
+        <p class="alert alert-success" role="status" aria-live="polite" style="max-width:1100px;margin:1rem auto;"><span aria-hidden="true">✓</span> {{ session('status') }}</p>
     @endif
-    @yield('content')
+    <main id="main-content" tabindex="-1">
+        @yield('content')
+    </main>
 
     <footer class="ds-footer site-footer">
         <div class="stripe-flag"></div>

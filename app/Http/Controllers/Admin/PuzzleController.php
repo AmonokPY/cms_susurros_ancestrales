@@ -84,7 +84,7 @@ class PuzzleController extends Controller
 
     private function payload(StorePuzzleRequest $request, MediaService $media, Puzzle $puzzle): array
     {
-        $data = $request->safe()->except(['cover_image', 'extra_image', 'audio']);
+        $data = $request->safe()->except(['cover_image', 'cover_image_alt', 'extra_image', 'extra_image_alt', 'audio']);
         $data['description'] = Html::sanitize($data['description'] ?? null);
         $data['benefits'] = Html::sanitize($data['benefits'] ?? null);
         $data['sort_order'] = ($data['sort_order'] ?? '') === '' || $data['sort_order'] === null

@@ -10,7 +10,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="login-page auth-page">
-    <main class="login-card auth-card franja-tricolor">
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+    <main id="main-content" class="login-card auth-card franja-tricolor" tabindex="-1">
         <header class="login-header auth-header">
             <span class="login-badge">Susurros Ancestrales</span>
             <h1>Crear cuenta</h1>
@@ -18,8 +19,8 @@
         </header>
 
             @if ($errors->any())
-                <div class="alert alert-error" role="alert">
-                    <strong>No fue posible completar el registro.</strong>
+                <div class="alert alert-error" role="alert" aria-live="assertive">
+                    <strong><span aria-hidden="true">⚠</span> No fue posible completar el registro.</strong>
                     <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -28,7 +29,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('register.store') }}" class="login-form">
+            <form method="POST" action="{{ route('register.store') }}" class="login-form" novalidate>
                 @csrf
 
                 <div class="form-group">
@@ -42,7 +43,12 @@
                         required
                         maxlength="100"
                         autofocus
+                        aria-invalid="{{ $errors->has('name') ? 'true' : 'false' }}"
+                        @error('name') aria-describedby="name-error" @enderror
                     >
+                    @error('name')
+                        <p class="field-error" id="name-error" role="alert"><span aria-hidden="true">⚠</span> {{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="form-group">
@@ -55,7 +61,12 @@
                         autocomplete="email"
                         required
                         maxlength="255"
+                        aria-invalid="{{ $errors->has('email') ? 'true' : 'false' }}"
+                        @error('email') aria-describedby="email-error" @enderror
                     >
+                    @error('email')
+                        <p class="field-error" id="email-error" role="alert"><span aria-hidden="true">⚠</span> {{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="form-group">
@@ -67,6 +78,8 @@
                             name="password"
                             autocomplete="new-password"
                             required
+                            aria-describedby="password-hint{{ $errors->has('password') ? ' password-error' : '' }}"
+                            aria-invalid="{{ $errors->has('password') ? 'true' : 'false' }}"
                         >
                         <button
                             id="togglePassword"
@@ -77,7 +90,10 @@
                             Mostrar
                         </button>
                     </div>
-                    <p class="field-hint">Mínimo 8 caracteres, con mayúsculas, minúsculas y un número.</p>
+                    <p class="field-hint" id="password-hint">Mínimo 8 caracteres, con mayúsculas, minúsculas y un número.</p>
+                    @error('password')
+                        <p class="field-error" id="password-error" role="alert"><span aria-hidden="true">⚠</span> {{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="form-group">
@@ -88,6 +104,7 @@
                         name="password_confirmation"
                         autocomplete="new-password"
                         required
+                        aria-invalid="{{ $errors->has('password_confirmation') ? 'true' : 'false' }}"
                     >
                 </div>
 

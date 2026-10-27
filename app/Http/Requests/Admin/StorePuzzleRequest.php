@@ -48,7 +48,17 @@ class StorePuzzleRequest extends FormRequest
             'cta_text' => ['nullable', 'string', 'max:200'],
             'cta_link' => ['nullable', 'string', 'max:500', 'regex:/^(https?:\/\/|tel:|mailto:)/i'],
             'cover_image' => [$this->isMethod('post') ? 'required' : 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'cover_image_alt' => [$this->hasFile('cover_image') ? 'required' : 'nullable', 'string', 'max:200'],
             'extra_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'extra_image_alt' => [$this->hasFile('extra_image') ? 'required' : 'nullable', 'string', 'max:200'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'cover_image_alt.required' => 'El texto alternativo (alt) de la imagen de portada es obligatorio.',
+            'extra_image_alt.required' => 'El texto alternativo (alt) de la imagen adicional es obligatorio.',
         ];
     }
 }

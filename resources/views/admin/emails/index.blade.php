@@ -12,17 +12,17 @@
 </form>
 
 @if ($errors->has('mailbox'))
-    <p class="alert alert-error">{{ $errors->first('mailbox') }}</p>
+    <p class="alert alert-error" role="alert"><span aria-hidden="true">⚠</span> {{ $errors->first('mailbox') }}</p>
 @endif
 
 <table class="ds-table">
     <thead>
         <tr>
-            <th>Estado</th>
-            <th>De</th>
-            <th>Asunto</th>
-            <th>Fecha</th>
-            <th></th>
+            <th scope="col">Estado</th>
+            <th scope="col">De</th>
+            <th scope="col">Asunto</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Acciones</th>
         </tr>
     </thead>
     <tbody>

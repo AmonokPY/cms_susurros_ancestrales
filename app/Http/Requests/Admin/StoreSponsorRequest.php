@@ -20,6 +20,14 @@ class StoreSponsorRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:80'],
             'email' => ['nullable', 'email', 'max:150'],
             'image' => [$this->isMethod('post') ? 'required' : 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'image_alt' => [$this->hasFile('image') ? 'required' : 'nullable', 'string', 'max:200'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'image_alt.required' => 'El texto alternativo (alt) del logo o imagen es obligatorio.',
         ];
     }
 }

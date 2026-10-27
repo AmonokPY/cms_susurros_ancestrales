@@ -11,11 +11,12 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
-    <div class="stripe-flag"></div>
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+    <div class="stripe-flag" aria-hidden="true"></div>
     <header class="ds-header franja-tricolor">
-        <nav class="ds-nav">
+        <nav class="ds-nav" aria-label="Navegación principal">
             <a href="{{ route('home') }}" class="brand" style="color:#FCD116;display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;">
-                <span class="brand-mark"><span></span><span></span><span></span></span>
+                <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
                 Susurros Ancestrales
             </a>
             <div class="nav-links">
@@ -39,10 +40,10 @@
         </nav>
     </header>
 
-    <main>
+    <main id="main-content" tabindex="-1">
         @if (session('status'))
             <div class="container">
-                <p class="alert alert-success" role="status">{{ session('status') }}</p>
+                <p class="alert alert-success" role="status" aria-live="polite"><span aria-hidden="true">✓</span> {{ session('status') }}</p>
             </div>
         @endif
         @yield('content')

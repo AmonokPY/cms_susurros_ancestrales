@@ -10,7 +10,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
-    <main class="login-page">
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+    <main id="main-content" class="login-page" tabindex="-1">
         <section class="login-card franja-tricolor">
             <div class="login-header">
                 <p class="login-badge">Susurros Ancestrales</p>
@@ -19,8 +20,8 @@
             </div>
 
             @if ($errors->any())
-                <div class="alert alert-error" role="alert">
-                    <strong>No fue posible iniciar sesión.</strong>
+                <div class="alert alert-error" role="alert" aria-live="assertive">
+                    <strong><span aria-hidden="true">⚠</span> No fue posible iniciar sesión.</strong>
                     <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -29,7 +30,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('login.store') }}" class="login-form">
+            <form method="POST" action="{{ route('login.store') }}" class="login-form" novalidate>
                 @csrf
 
                 <div class="form-group">
@@ -42,7 +43,12 @@
                         autocomplete="username"
                         required
                         autofocus
+                        aria-invalid="{{ $errors->has('email') ? 'true' : 'false' }}"
+                        @error('email') aria-describedby="email-error" @enderror
                     >
+                    @error('email')
+                        <p class="field-error" id="email-error" role="alert"><span aria-hidden="true">⚠</span> {{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="form-group">
@@ -54,6 +60,8 @@
                             name="password"
                             autocomplete="current-password"
                             required
+                            aria-invalid="{{ $errors->has('password') ? 'true' : 'false' }}"
+                            @error('password') aria-describedby="password-error" @enderror
                         >
                         <button
                             id="togglePassword"
@@ -64,6 +72,9 @@
                             Mostrar
                         </button>
                     </div>
+                    @error('password')
+                        <p class="field-error" id="password-error" role="alert"><span aria-hidden="true">⚠</span> {{ $message }}</p>
+                    @enderror
                 </div>
 
                 <label class="remember">

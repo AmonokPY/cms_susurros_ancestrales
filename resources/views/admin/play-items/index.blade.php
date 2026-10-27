@@ -5,10 +5,11 @@
 
 @section('content')
 <p><a class="btn-primary" href="{{ route('admin.play-items.create') }}">Agregar ítem</a></p>
+<p class="field-hint">Puede arrastrar cada tarjeta o enfocar el botón ☰ y usar las flechas Arriba/Abajo del teclado para reordenar.</p>
 <ul class="reorder-list" data-reorder="{{ route('admin.play-items.reorder') }}">
     @forelse ($items as $item)
         <li draggable="true" data-id="{{ $item->id }}">
-            <span class="handle">☰</span>
+            <span class="handle" tabindex="0" role="button" aria-label="Reordenar {{ $item->title }} (use las flechas arriba y abajo)">☰</span>
             @if ($media->url($item->image_path))
                 <img src="{{ $media->url($item->image_path) }}" alt="">
             @endif
@@ -20,7 +21,7 @@
             <form method="POST" action="{{ route('admin.play-items.destroy', $item) }}" onsubmit="return confirm('¿Eliminar este ítem?')">
                 @csrf
                 @method('DELETE')
-                <button type="submit">Eliminar</button>
+                <button type="submit" class="button-danger btn-sm">Eliminar</button>
             </form>
         </li>
     @empty

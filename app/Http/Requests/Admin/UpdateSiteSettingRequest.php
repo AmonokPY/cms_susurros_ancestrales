@@ -22,7 +22,7 @@ class UpdateSiteSettingRequest extends FormRequest
             'about_title' => ['required', 'string', 'max:150'],
             'about_text' => ['nullable', 'string', 'max:20000'],
             'about_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
-            'about_image_alt' => ['nullable', 'string', 'max:200'],
+            'about_image_alt' => [$this->hasFile('about_image') ? 'required' : 'nullable', 'string', 'max:200'],
             'contact_title' => ['required', 'string', 'max:150'],
             'contact_email' => ['nullable', 'email', 'max:150'],
             'contact_phone' => ['nullable', 'string', 'max:80'],
@@ -42,6 +42,7 @@ class UpdateSiteSettingRequest extends FormRequest
     {
         return [
             'android_apk_url.url' => 'La URL del APK debe ser un enlace válido.',
+            'about_image_alt.required' => 'El texto alternativo (alt) es obligatorio al subir una imagen informativa.',
         ];
     }
 }

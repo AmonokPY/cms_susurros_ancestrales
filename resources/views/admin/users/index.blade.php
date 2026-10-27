@@ -9,10 +9,10 @@
 <table class="ds-table">
     <thead>
         <tr>
-            <th>Nombre</th>
-            <th>Correo</th>
-            <th>Tipo</th>
-            <th></th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Correo</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Acciones</th>
         </tr>
     </thead>
     <tbody>
