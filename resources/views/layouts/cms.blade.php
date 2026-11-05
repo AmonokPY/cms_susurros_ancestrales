@@ -9,7 +9,7 @@
         document.documentElement.setAttribute('data-theme', localStorage.getItem('colombia-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
     </script>
     @vite(['resources/css/cms.css', 'resources/js/cms.js'])
-    <script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.4/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.4/tinymce.min.js" integrity="sha384-Pkj8wZH9tfNXs3Pnom44o+ZJMfEFnbi74rOyCJr+lin9jpqzmvUHAmeZjwKT+T95" crossorigin="anonymous" referrerpolicy="origin"></script>
 </head>
 <body class="cms-body cms-layout">
     <a href="#main-content" class="skip-link">Saltar al contenido principal</a>

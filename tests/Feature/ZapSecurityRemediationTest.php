@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Mail\ContactMessage;
 use App\Services\MediaService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -62,7 +61,7 @@ class ZapSecurityRemediationTest extends TestCase
     {
         Mail::fake();
 
-        foreach (['\\contacto', '../../etc/passwd', '../storage/logs/laravel.log', "Ana..Perez"] as $payload) {
+        foreach (['\\contacto', '../../etc/passwd', '../storage/logs/laravel.log', 'Ana..Perez'] as $payload) {
             $this->postJson(route('contact.store'), [
                 'name' => $payload,
                 'email' => 'zap@example.com',
@@ -85,5 +84,44 @@ class ZapSecurityRemediationTest extends TestCase
         $this->assertNull($media->url('../../.env'));
         $this->assertNull($media->url('..\\..\\config\\app.php'));
         $this->assertNull($media->resolveSafePublicStoragePath('../../.env'));
+    }
+
+    /**
+     * [FASE 2 · CWE-497, CWE-693, CWE-1021, CWE-319]
+     * Verifica la presencia de todas las cabeceras de seguridad en /, /contacto, /login y 404.
+     */
+    public function test_security_headers_are_present_on_public_auth_and_error_routes(): void
+    {
+        $this->seed();
+
+        foreach (['/', '/contacto', '/login', '/ruta-inexistente-404'] as $uri) {
+            $response = $this->get($uri);
+
+            $response->assertHeader('X-Frame-Options', 'DENY');
+            $response->assertHeader('X-Content-Type-Options', 'nosniff');
+            $response->assertHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+            $response->assertHeader('Server', 'webserver');
+            $response->assertHeaderMissing('X-Powered-By');
+
+            $csp = (string) $response->headers->get('Content-Security-Policy');
+            $this->assertStringContainsString("default-src 'self'", $csp);
+            $this->assertStringContainsString("frame-ancestors 'none'", $csp);
+            $this->assertStringContainsString("form-action 'self'", $csp);
+            $this->assertStringContainsString('https://cdn.jsdelivr.net', $csp);
+        }
+    }
+
+    /**
+     * [MEDIO · CWE-345 / CWE-829] Verifica atributos SRI (integrity + crossorigin) en scripts CDN.
+     */
+    public function test_external_scripts_include_sri_integrity_attributes(): void
+    {
+        $this->seed();
+
+        $response = $this->get('/');
+        $response->assertOk();
+        $response->assertSee('integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"', false);
+        $response->assertSee('integrity="sha384-ioeiiA4Qj8TNkk15vf+DfcM4fQbw3fUabf9VWRr56yQZ2fjAWiHPV6oWH2Jo0bXE"', false);
+        $response->assertSee('crossorigin="anonymous"', false);
     }
 }
