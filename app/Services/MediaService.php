@@ -5,21 +5,35 @@ namespace App\Services;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 
+/**
+ * Servicio de gestión de archivos multimedia del CMS.
+ *
+ * Remediación OWASP ZAP:
+ * - [ALTO · CWE-22] Validación de rutas con basename() + realpath() garantizando que
+ *   toda ruta permanezca dentro de storage_path('app/public').
+ */
 class MediaService
 {
     public function storeImage(UploadedFile $file, string $directory): string
     {
-        $path = $file->store($directory, 'public');
+        $safeDirectory = $this->sanitizeDirectory($directory);
+        $path = $file->store($safeDirectory, 'public');
 
-        $this->optimizeImage(Storage::disk('public')->path($path));
+        $fullPath = $this->resolveSafePublicStoragePath($path);
+        if ($fullPath !== null) {
+            $this->optimizeImage($fullPath);
+        }
 
         return $path;
     }
 
     public function storeAudio(UploadedFile $file, string $directory = 'audios'): string
     {
-        return $file->store($directory, 'public');
+        $safeDirectory = $this->sanitizeDirectory($directory);
+
+        return $file->store($safeDirectory, 'public');
     }
 
     public function replaceImage(?string $currentPath, ?UploadedFile $file, string $directory): ?string
@@ -50,8 +64,13 @@ class MediaService
             return;
         }
 
-        if (Storage::disk('public')->exists($path)) {
-            Storage::disk('public')->delete($path);
+        $safeRelative = $this->sanitizeRelativePath($path);
+        if ($safeRelative === null) {
+            return;
+        }
+
+        if (Storage::disk('public')->exists($safeRelative)) {
+            Storage::disk('public')->delete($safeRelative);
         }
     }
 
@@ -65,7 +84,68 @@ class MediaService
             return $path;
         }
 
-        return Storage::disk('public')->url($path);
+        $safeRelative = $this->sanitizeRelativePath($path);
+        if ($safeRelative === null) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($safeRelative);
+    }
+
+    /**
+     * Valida que una ruta relativa resuelva estrictamente dentro de storage_path('app/public').
+     */
+    public function resolveSafePublicStoragePath(string $relativePath): ?string
+    {
+        $safeRelative = $this->sanitizeRelativePath($relativePath);
+        if ($safeRelative === null) {
+            return null;
+        }
+
+        $baseDir = Storage::disk('public')->path('');
+        $realBase = realpath($baseDir) ?: rtrim($baseDir, DIRECTORY_SEPARATOR);
+        $candidate = Storage::disk('public')->path($safeRelative);
+        $realCandidate = realpath($candidate);
+
+        if ($realCandidate === false) {
+            return null;
+        }
+
+        $normalizedBase = rtrim(str_replace('\\', '/', $realBase), '/').'/';
+        $normalizedCandidate = str_replace('\\', '/', $realCandidate);
+
+        if (! str_starts_with($normalizedCandidate, $normalizedBase)) {
+            return null;
+        }
+
+        return $realCandidate;
+    }
+
+    private function sanitizeDirectory(string $directory): string
+    {
+        $clean = basename(str_replace(['\\', "\0"], '/', trim($directory)));
+        if ($clean === '' || $clean === '.' || $clean === '..') {
+            throw new InvalidArgumentException('Directorio de almacenamiento no válido.');
+        }
+
+        return $clean;
+    }
+
+    private function sanitizeRelativePath(string $path): ?string
+    {
+        if (str_contains($path, "\0") || str_contains($path, '..')) {
+            return null;
+        }
+
+        $normalized = ltrim(str_replace('\\', '/', trim($path)), '/');
+        $segments = array_filter(explode('/', $normalized), fn (string $s) => $s !== '');
+        if ($segments === []) {
+            return null;
+        }
+
+        $safeSegments = array_map(fn (string $segment) => basename($segment), $segments);
+
+        return implode('/', $safeSegments);
     }
 
     private function optimizeImage(string $fullPath): void

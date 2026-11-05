@@ -17,7 +17,10 @@ class ContactMessage extends Mailable
         public string $senderName,
         public string $senderEmail,
         public string $contactMessage,
-    ) {}
+    ) {
+        $this->senderName = str_replace(["\r", "\n", "\0", '/', '\\'], '', $this->senderName);
+        $this->senderEmail = str_replace(["\r", "\n", "\0"], '', $this->senderEmail);
+    }
 
     public function envelope(): Envelope
     {
