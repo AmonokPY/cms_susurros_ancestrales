@@ -4,7 +4,9 @@ namespace Tests\Feature;
 
 use App\Services\MediaService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Symfony\Component\HttpFoundation\Cookie;
 use Tests\TestCase;
 
 class ZapSecurityRemediationTest extends TestCase
@@ -123,5 +125,85 @@ class ZapSecurityRemediationTest extends TestCase
         $response->assertSee('integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"', false);
         $response->assertSee('integrity="sha384-ioeiiA4Qj8TNkk15vf+DfcM4fQbw3fUabf9VWRr56yQZ2fjAWiHPV6oWH2Jo0bXE"', false);
         $response->assertSee('crossorigin="anonymous"', false);
+    }
+
+    /**
+     * [BAJO · CWE-1004] Cookie XSRF-TOKEN con HttpOnly, Secure y SameSite=Lax.
+     */
+    public function test_xsrf_token_cookie_has_httponly_secure_and_samesite_lax(): void
+    {
+        $response = $this->get('/login');
+        $response->assertOk();
+
+        $cookies = $response->headers->getCookies();
+        $xsrfCookie = null;
+
+        foreach ($cookies as $cookie) {
+            if ($cookie->getName() === 'XSRF-TOKEN') {
+                $xsrfCookie = $cookie;
+                break;
+            }
+        }
+
+        $this->assertInstanceOf(Cookie::class, $xsrfCookie, 'La cookie XSRF-TOKEN debe estar presente.');
+        $this->assertTrue($xsrfCookie->isHttpOnly(), 'XSRF-TOKEN debe tener HttpOnly=true.');
+        $this->assertTrue($xsrfCookie->isSecure(), 'XSRF-TOKEN debe tener Secure=true.');
+        $this->assertSame('lax', strtolower((string) $xsrfCookie->getSameSite()), 'XSRF-TOKEN debe tener SameSite=Lax.');
+    }
+
+    /**
+     * [BAJO · CWE-201] Redirect de POST /login, /registro y /contacto con cuerpo vacío.
+     */
+    public function test_login_register_and_contact_redirects_have_empty_body(): void
+    {
+        Mail::fake();
+
+        // 1. POST /login con credenciales fallidas -> 302 con cuerpo vacío
+        $loginFail = $this->from(route('login'))->post(route('login.store'), [
+            'email' => 'noexiste@example.com',
+            'password' => 'incorrecta',
+        ]);
+        $loginFail->assertRedirect(route('login'));
+        $this->assertSame('', $loginFail->getContent());
+        $this->assertSame('0', $loginFail->headers->get('Content-Length'));
+
+        // 2. POST /login exitoso -> 302 con cuerpo vacío
+        $user = $this->cmsUser([
+            'password' => Hash::make('Segura#2026!'),
+        ]);
+        $loginSuccess = $this->post(route('login.store'), [
+            'email' => $user->email,
+            'password' => 'Segura#2026!',
+        ]);
+        $loginSuccess->assertRedirect(route('dashboard'));
+        $this->assertSame('', $loginSuccess->getContent());
+        $this->assertSame('0', $loginSuccess->headers->get('Content-Length'));
+
+        // 3. POST /contacto exitoso -> 302 con cuerpo vacío
+        $contactRedirect = $this->from(route('contact.create'))->post(route('contact.store'), [
+            'name' => 'Ana Perez',
+            'email' => 'ana@example.com',
+            'message' => 'Mensaje válido para comprobar redirect sin cuerpo HTML.',
+        ]);
+        $contactRedirect->assertRedirect(route('contact.create'));
+        $this->assertSame('', $contactRedirect->getContent());
+        $this->assertSame('0', $contactRedirect->headers->get('Content-Length'));
+    }
+
+    /**
+     * [BAJO · CWE-525] Cache-Control restrictivo en rutas de autenticación y formularios.
+     */
+    public function test_auth_and_form_routes_disable_caching(): void
+    {
+        foreach (['/login', '/registro', '/contacto'] as $uri) {
+            $response = $this->get($uri);
+            $cacheControl = (string) $response->headers->get('Cache-Control');
+
+            $this->assertStringContainsString('no-store', $cacheControl);
+            $this->assertStringContainsString('no-cache', $cacheControl);
+            $this->assertStringContainsString('must-revalidate', $cacheControl);
+            $this->assertStringContainsString('private', $cacheControl);
+            $response->assertHeader('Pragma', 'no-cache');
+        }
     }
 }

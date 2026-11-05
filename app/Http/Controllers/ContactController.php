@@ -20,6 +20,7 @@ use Throwable;
  *   como datos parametrizados mediante Eloquent prepared statements (AuditLog) y nunca
  *   mediante concatenación SQL o DB::raw.
  * - [ALTO · CWE-22] Sanitiza y bloquea cualquier intento de construcción de rutas con "name".
+ * - [BAJO · CWE-201] Redirección 302 con cuerpo vacío y Content-Length: 0.
  */
 class ContactController extends Controller
 {
@@ -48,9 +49,13 @@ class ContactController extends Controller
             Log::warning('contact.mail_failed', ['error' => $exception->getMessage()]);
             AuditLog::record('contact.send', 'Fallo al enviar el formulario de contacto.', 'denied');
 
-            return back()
+            $errorRedirect = back()
                 ->withInput()
                 ->withErrors(['message' => 'No fue posible enviar el mensaje. Intente más tarde.']);
+            $errorRedirect->setContent('');
+            $errorRedirect->headers->set('Content-Length', '0');
+
+            return $errorRedirect;
         }
 
         AuditLog::record(
@@ -59,6 +64,10 @@ class ContactController extends Controller
             'ok'
         );
 
-        return back()->with('status', 'Mensaje enviado correctamente.');
+        $redirect = back()->with('status', 'Mensaje enviado correctamente.');
+        $redirect->setContent('');
+        $redirect->headers->set('Content-Length', '0');
+
+        return $redirect;
     }
 }

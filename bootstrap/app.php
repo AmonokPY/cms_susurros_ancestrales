@@ -3,9 +3,11 @@
 use App\Http\Middleware\EnsureEmailIsAuthorized;
 use App\Http\Middleware\RemoveServerHeaders;
 use App\Http\Middleware\SecurityHeaders;
+use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -21,10 +23,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(RemoveServerHeaders::class);
         $middleware->append(SecurityHeaders::class);
 
-        $middleware->web(append: [
-            RemoveServerHeaders::class,
-            SecurityHeaders::class,
-        ]);
+        $middleware->web(
+            append: [
+                RemoveServerHeaders::class,
+                SecurityHeaders::class,
+            ],
+            replace: [
+                ValidateCsrfToken::class => VerifyCsrfToken::class,
+            ]
+        );
 
         $middleware->api(append: [
             RemoveServerHeaders::class,
