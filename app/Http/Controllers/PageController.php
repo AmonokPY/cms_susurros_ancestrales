@@ -33,7 +33,7 @@ class PageController extends Controller
     public function puzzles(MediaService $media, ?string $slug = null): View|RedirectResponse
     {
         if ($slug) {
-            $redirect = PuzzleSlugRedirect::query()->where('old_slug', $slug)->first();
+            $redirect = PuzzleSlugRedirect::query()->with('puzzle')->where('old_slug', $slug)->first();
             if ($redirect && $redirect->puzzle && $redirect->puzzle->slug !== $slug) {
                 return redirect()->route('puzzles.show', $redirect->puzzle->slug, 301);
             }
