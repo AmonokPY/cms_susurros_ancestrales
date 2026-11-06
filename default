@@ -8,6 +8,27 @@ server {
     server_name  example.com www.example.com;
     port_in_redirect off;
 
+    # [BAJO · CWE-497] Ocultar versión de Nginx en cabecera Server y páginas de error
+    server_tokens off;
+    # Si ngx_headers_more está habilitado en la imagen personalizada:
+    # more_clear_headers Server;
+    # more_clear_headers X-Powered-By;
+
+    # [BAJO · CWE-693 / CWE-1021 / CWE-319] Cabeceras de seguridad a nivel de servidor web
+    add_header X-Frame-Options "DENY" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    # [BAJO · CWE-525] Cache-Control inmutable para assets estáticos con hash
+    location ~* \.(?:css|js|mjs|webp|avif|png|jpg|jpeg|gif|ico|svg|woff2?|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        access_log off;
+        try_files $uri =404;
+    }
+
     location / {
         index  index.php index.html index.htm hostingstart.html;
         try_files $uri $uri/ /index.php?$args;
@@ -31,6 +52,7 @@ server {
         fastcgi_split_path_info ^(.+?\.php)(|/.*)$;
         fastcgi_pass 127.0.0.1:9000;
         include fastcgi_params;
+        fastcgi_hide_header X-Powered-By;
         fastcgi_param HTTP_PROXY "";
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param PATH_INFO $fastcgi_path_info;

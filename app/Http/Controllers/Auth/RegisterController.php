@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
+/**
+ * Controlador de registro de cuentas públicas.
+ *
+ * Remediación OWASP ZAP:
+ * - [BAJO · CWE-201] Redirección 302 sin cuerpo HTML y con Content-Length: 0.
+ */
 class RegisterController extends Controller
 {
     public function create(): View
@@ -34,9 +40,13 @@ class RegisterController extends Controller
 
         AuditLog::record('auth.register', 'Registro de cuenta pública.', 'ok', $user);
 
-        return redirect()->route('home')->with(
+        $redirect = redirect()->route('home')->with(
             'status',
             'Cuenta creada. Puede ver el sitio; el CMS lo habilita un administrador.'
         );
+        $redirect->setContent('');
+        $redirect->headers->set('Content-Length', '0');
+
+        return $redirect;
     }
 }

@@ -18,15 +18,38 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: Setup PHP (Latest patched 8.3.x)
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-          extensions: mbstring, xml, ctype, json, bcmath, openssl, pdo, pdo_mysql, tokenizer, curl, zip
+          extensions: mbstring, xml, ctype, json, bcmath, openssl, pdo, pdo_mysql, tokenizer, curl, zip, opcache
+          ini-values: expose_php=Off, opcache.enable=1
           coverage: none
 
       - name: Install Composer dependencies
         run: composer validate --no-check-publish && composer install --no-dev --prefer-dist --no-progress --optimize-autoloader
+
+      - name: Security Audit (Composer Audit — Fail on High/Critical)
+        run: |
+          AUDIT_JSON=$(composer audit --no-dev --format=json || true)
+          echo "$AUDIT_JSON"
+          php -r '
+            $data = json_decode($argv[1], true);
+            $advisories = $data["advisories"] ?? [];
+            $blocking = [];
+            foreach ($advisories as $pkg => $items) {
+                foreach ($items as $adv) {
+                    $sev = strtolower((string) ($adv["severity"] ?? "high"));
+                    if (in_array($sev, ["high", "critical"], true)) {
+                        $blocking[] = $pkg . ": " . ($adv["advisoryId"] ?? $adv["cve"] ?? "unknown") . " (" . $sev . ")";
+                    }
+                }
+            }
+            if (!empty($blocking)) {
+                fwrite(STDERR, "Vulnerabilidades High/Critical detectadas:\n" . implode("\n", $blocking) . "\n");
+                exit(1);
+            }
+          ' "$AUDIT_JSON"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -39,6 +62,9 @@ jobs:
 
       - name: Build Vite assets
         run: npm run build
+
+      - name: Precompile Laravel Blade views
+        run: php artisan view:cache
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -59,6 +85,8 @@ jobs:
             composer.json
             composer.lock
             default
+            php.ini
+            startup.sh
           if-no-files-found: error
 
   deploy:

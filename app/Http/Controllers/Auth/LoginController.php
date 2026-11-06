@@ -10,6 +10,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
+/**
+ * Controlador de autenticación.
+ *
+ * Remediación OWASP ZAP:
+ * - [BAJO · CWE-201] Redirecciones 302 con cuerpo vacío y Content-Length: 0.
+ */
 class LoginController extends Controller
 {
     public function create(): View
@@ -32,7 +38,9 @@ class LoginController extends Controller
         if (! Auth::attempt(['email' => $email, 'password' => $credentials['password']], $request->boolean('remember'))) {
             AuditLog::record('auth.login', 'Credenciales inválidas.', 'denied', $user);
 
-            return back()->withErrors(['email' => $generic])->onlyInput('email');
+            return $this->emptyRedirect(
+                back()->withErrors(['email' => $generic])->onlyInput('email')
+            );
         }
 
         $authenticated = $request->user();
@@ -40,7 +48,9 @@ class LoginController extends Controller
         if (! $authenticated?->is_active || ! $authenticated->hasActiveRole()) {
             $this->deny($request, $authenticated, 'Cuenta inactiva o rol no válido.');
 
-            return back()->withErrors(['email' => $generic])->onlyInput('email');
+            return $this->emptyRedirect(
+                back()->withErrors(['email' => $generic])->onlyInput('email')
+            );
         }
 
         $request->session()->regenerate();
@@ -48,12 +58,14 @@ class LoginController extends Controller
         AuditLog::record('auth.login', 'Inicio de sesión correcto.', 'ok', $authenticated);
 
         if ($authenticated->canAccessCms()) {
-            return redirect()->intended(route('dashboard'));
+            return $this->emptyRedirect(redirect()->intended(route('dashboard')));
         }
 
-        return redirect()->route('home')->with(
-            'status',
-            'Inicio de sesión correcto. El CMS se habilita cuando un administrador lo autorice.'
+        return $this->emptyRedirect(
+            redirect()->route('home')->with(
+                'status',
+                'Inicio de sesión correcto. El CMS se habilita cuando un administrador lo autorice.'
+            )
         );
     }
 
@@ -67,7 +79,7 @@ class LoginController extends Controller
 
         AuditLog::record('auth.logout', 'Cierre de sesión.', 'ok', $user);
 
-        return redirect()->route('login');
+        return $this->emptyRedirect(redirect()->route('login'));
     }
 
     private function deny(Request $request, ?User $user, string $description): void
@@ -76,5 +88,13 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+    }
+
+    private function emptyRedirect(RedirectResponse $redirect): RedirectResponse
+    {
+        $redirect->setContent('');
+        $redirect->headers->set('Content-Length', '0');
+
+        return $redirect;
     }
 }
